@@ -82,7 +82,6 @@ def affichage_livre(book):
     if not book:
         print("Aucune information sur le livre à afficher.")
         return
-
     print("Informations du livre :")
     print(f"  URL de la page produit : {book['product_page_url']}")
     print(f"  Code produit universel (UPC) : {book['universal_product_code']}")
@@ -96,19 +95,10 @@ def affichage_livre(book):
     print(f"  URL de l'image         : {book['image_url']}")
     print("-" * 40)
     
-def affichage_livres(books):
-    if not books:
-        print("Aucun livre à afficher.")
-        return None
-
-    for index, book in enumerate(books, start=1):
-        print(f"Livre {index}:")
-        print(f"  Titre         : {book['title']}")
-        print(f"  Prix          : {book['price']}")
-        print(f"  Disponibilité : {book['availability']}")
-        print(f"  Lien de l'image : {book['image_url']}")
-        print("-" * 40)
-
+def affichage_livres(liste_livres):
+    taille_livres = len(liste_livres)
+    for livre in range(taille_livres) :
+        affichage_livre(liste_livres[livre])
 #TRANSFORM
 
 
@@ -119,9 +109,10 @@ def affichage_livres(books):
 
 
 def main():
-    liste_livres =extraction_livres("http://books.toscrape.com/")
-    #affichage_livres(liste_livres)
-    affichage_livre(liste_livres[4])
+    liste_livres=extraction_livres("http://books.toscrape.com/")
+    affichage_livres(liste_livres)
+    
+    
     
     
 if __name__ == "__main__":
