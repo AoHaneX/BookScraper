@@ -1,6 +1,8 @@
 import requests
 import json
+import csv
 from bs4 import BeautifulSoup
+
 
 """1)Préparer le github&Premier commit
 Partie 2!
@@ -55,16 +57,16 @@ def extraction_livres(url: str):
 
                     # Ajouter les données dans la liste principale
                     books_list.append({
-                        'product_page_url': product_page_url,
-                        'universal_product_code': universal_product_code,
-                        'title': title,
-                        'price_including_tax': price_including_tax,
-                        'price_excluding_tax': price_excluding_tax,
-                        'number_available': availability,
-                        'product_description': product_description,
-                        'category': category,
-                        'review_rating': review_rating,
-                        'image_url': image_url
+                        'Code universel des produits / UPC': universal_product_code,
+                        'Titre': title,
+                        'Categorie': category,
+                        'Note': review_rating,
+                        'Description': product_description,
+                        'Prix TTC': price_including_tax,
+                        'Prix HTTC': price_excluding_tax,
+                        'Nombre disponible': availability,
+                        'Irl du produit': product_page_url,
+                        "Url Image": image_url
                     })
                 except AttributeError as e:
                     print(f"Erreur lors de l'extraction des données : {e}")
@@ -83,16 +85,16 @@ def affichage_livre(book):
         print("Aucune information sur le livre à afficher.")
         return
     print("Informations du livre :")
-    print(f"  URL de la page produit : {book['product_page_url']}")
-    print(f"  Code produit universel (UPC) : {book['universal_product_code']}")
-    print(f"  Titre                  : {book['title']}")
-    print(f"  Prix TTC               : {book['price_including_tax']}")
-    print(f"  Prix HT                : {book['price_excluding_tax']}")
-    print(f"  Disponibilité          : {book['number_available']}")
-    print(f"  Description            : {book['product_description']}")
-    print(f"  Catégorie              : {book['category']}")
-    print(f"  Note                   : {book['review_rating']}")
-    print(f"  URL de l'image         : {book['image_url']}")
+    print(f"  Irl du produit                : {book['Irl du produit']}")
+    print(f"  Code universel des produits / UPC : {book['Code universel des produits / UPC']}")
+    print(f"  Titre                        : {book['Titre']}")
+    print(f"  Prix TTC                     : {book['Prix TTC']}")
+    print(f"  Prix HTTC                    : {book['Prix HTTC']}")
+    print(f"  Nombre disponible            : {book['Nombre disponible']}")
+    print(f"  Description                  : {book['Description']}")
+    print(f"  Catégorie                    : {book['Categorie']}")
+    print(f"  Note                         : {book['Note']}")
+    print(f"  URL de l'image         : {book['Url Image']}")
     print("-" * 40)
     
 def affichage_livres(liste_livres):
@@ -101,9 +103,31 @@ def affichage_livres(liste_livres):
         affichage_livre(liste_livres[livre])
 #TRANSFORM
 
-
+#def create
 
 #LOAD
+def creer_csv(nom_fichier, liste_livres):
+    """
+    Crée un fichier CSV et écrit les données dedans.
+    :param nom_fichier: Nom du fichier CSV à créer (ex: 'livres.csv')
+    :param en_tete: Liste des noms de colonnes (ex: ['titre', 'prix'])
+    :param donnees: Liste de dictionnaires contenant les données à écrire
+    """
+    
+    en_tete = ['Code universel des produits / UPC',
+               'Titre',
+               'Categorie',
+               'Note',
+               'Description',
+               'Prix TTC',
+               'Prix HTTC',
+               'Nombre disponible',
+               'Irl du produit',
+               'Url Image']
+    with open(nom_fichier, mode='w', newline='', encoding='utf-8') as fichier_csv:
+        writer = csv.DictWriter(fichier_csv, fieldnames=en_tete,delimiter=';')
+        writer.writeheader()
+        writer.writerows(liste_livres)
 
 
 
@@ -111,10 +135,12 @@ def affichage_livres(liste_livres):
 def main():
     liste_livres=extraction_livres("http://books.toscrape.com/")
     affichage_livres(liste_livres)
+    #print(liste_livres)
+    creer_csv("livres.csv", liste_livres)
+ 
     
     
-    
-    
+
 if __name__ == "__main__":
     main()
 
