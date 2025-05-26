@@ -3,18 +3,6 @@ import json
 import csv
 from bs4 import BeautifulSoup
 
-
-"""1)Préparer le github&Premier commit
-Partie 2!
-)Choisir une page dont extraire les données
-2)Ecrire une fonction permettant d'extraire les données de la pages et qui renvoi une liste de dictionnaire
-3)Ecrire une fonction permettant d'afficher cette liste
-
-
-
-4)Faireune fonction avec une boucle pour afficher le contenu du fichier CSV
-"""
-
 #EXTRACT
 
 def extraction_livres(url: str):
@@ -95,11 +83,50 @@ def extraction_par_categorie(nom_categorie):
         page += 1
     return books_list
 
+def extraction_all(liste_categories):
+    """
+    Extrait tous les livres de toutes les catégories passées en paramètre.
+    :param liste_categories: Liste des noms de catégories (ex: ['travel_2', 'mystery_3', ...])
+    :return: Liste de tous les livres de toutes les catégories (liste de dictionnaires)
+    """
+    all_books = []
+    for categorie in liste_categories:
+        print(f"Extraction de la catégorie : {categorie}")
+        livres_categorie = extraction_par_categorie(categorie)
+        if livres_categorie:
+            all_books.extend(livres_categorie)
+    return all_books
+
+
+def get_category():
+    """
+    Récupère les noms de toutes les catégories présentes dans le sous-menu "Books" de la page d'accueil.
+    :return: Liste des noms de catégories au format utilisé dans les URLs (ex: 'sequential-art_5')
+    """
+    url = "https://books.toscrape.com/index.html"
+    response = requests.get(url)
+    if response.status_code != 200:
+        print("Erreur lors de la requête :", response.status_code)
+        return []
+    soup = BeautifulSoup(response.content, "html.parser")
+    categories = []
+    # Le menu des catégories est dans <ul class="nav nav-list">, les sous-catégories dans les <li> enfants
+    nav_list = soup.find('ul', class_='nav-list')
+    if nav_list:
+        for li in nav_list.find_all('li'):
+            a = li.find('a')
+            if a and 'category/books/' in a['href']:
+                # On récupère le nom de la catégorie tel qu'il apparaît dans l'URL
+                href = a['href']
+                # Exemple : 'catalogue/category/books/sequential-art_5/index.html'
+                # On extrait 'sequential-art_5'
+                parts = href.split('/')
+                if len(parts) > 4:
+                    categories.append(parts[3])
+    return categories
+
+
 def affichage_livre(book):
-    """
-    Affiche toutes les informations d'un livre.
-    :param book: Un dictionnaire contenant les informations d'un livre.
-    """
     if not book:
         print("Aucune information sur le livre à afficher.")
         return
@@ -152,7 +179,7 @@ def creer_csv(nom_fichier, liste_livres):
 
 
 def main():
-    liste_livres=extraction_par_categorie("historical-fiction_4")
+    liste_livres=extraction_all(get_category())
     #liste_livres=extraction_livres("https://books.toscrape.com/catalogue/category/books/travel_2/index.html")
    # affichage_livres(liste_livres)
     #print(liste_livres)
