@@ -28,8 +28,10 @@ def extraction_livres(url: str):
             # Extraire le lien vers la page du livre
             link = book.h3.a['href']
             book_url = "http://books.toscrape.com/"
-            book_link = book_url + book.h3.a['href']
-
+            if link.startswith('../../../'):
+                link = 'catalogue/' + link.replace('../../../', '')
+            book_link = book_url + link
+            print("Le lien du livre est " + book_link)
             # Faire une requête vers la page du livre
             request = requests.get(book_link)
             if request.status_code == 200:
@@ -55,7 +57,7 @@ def extraction_livres(url: str):
                     image_url = soup.find('div', id='product_gallery').find('img')['src']
                     image_url = "http://books.toscrape.com/" + image_url.replace('../../', '')
 
-                    # Ajouter les données dans la liste principale
+                    # Ajouter les données dans la liste books_list
                     books_list.append({
                         'Code universel des produits / UPC': universal_product_code,
                         'Titre': title,
@@ -70,11 +72,28 @@ def extraction_livres(url: str):
                     })
                 except AttributeError as e:
                     print(f"Erreur lors de l'extraction des données : {e}")
+        else:
+            print(f"Erreur lors de la requête vers la page du livre : {request.status_code}")
         return books_list
     else:
         print(f"Erreur lors de la requête : {request.status_code}")
         return None
 
+def extraction_par_categorie(nom_categorie):
+    base_url = "https://books.toscrape.com/catalogue/category/books/"
+    url_page_1 = f"{base_url}{nom_categorie}/index.html"
+    books_list = []
+    page = 1
+    while True:
+        url = url_page_1.replace('index.html', f'page-{page}.html')
+        print("L'url est "+ url)
+        books_page = extraction_livres(url)
+        print(books_page)
+        if not books_page or len(books_page) == 0:
+            break
+        books_list.extend(books_page)
+        page += 1
+    return books_list
 
 def affichage_livre(book):
     """
@@ -133,8 +152,9 @@ def creer_csv(nom_fichier, liste_livres):
 
 
 def main():
-    liste_livres=extraction_livres("http://books.toscrape.com/")
-    affichage_livres(liste_livres)
+    liste_livres=extraction_par_categorie("historical-fiction_4")
+    #liste_livres=extraction_livres("https://books.toscrape.com/catalogue/category/books/travel_2/index.html")
+   # affichage_livres(liste_livres)
     #print(liste_livres)
     creer_csv("livres.csv", liste_livres)
  
