@@ -1,9 +1,37 @@
 import requests
 import json
 import csv
+import os
 from bs4 import BeautifulSoup
 
-#EXTRACT
+
+def download_image(url_image, nom_fichier=None):
+    """
+    Télécharge une image depuis une URL et la sauvegarde dans le dossier 'IMG'.
+    :param url_image: URL de l'image à télécharger
+    :param nom_fichier: Nom du fichier local (optionnel). Si None, le nom sera extrait de l'URL.
+    """
+    # Créer le dossier IMG s'il n'existe pas
+    dossier = "IMG"
+    if not os.path.exists(dossier):
+        os.makedirs(dossier)
+    # Déterminer le nom du fichier
+    if not nom_fichier:
+        nom_fichier = url_image.split('/')[-1]
+    chemin_fichier = os.path.join(dossier, nom_fichier)
+    # Télécharger l'image
+    try:
+        response = requests.get(url_image, stream=True)
+        if response.status_code == 200:
+            with open(chemin_fichier, 'wb') as f:
+                for chunk in response.iter_content(1024):
+                    f.write(chunk)
+            print(f"Téléchargé : {chemin_fichier}")
+        else:
+            print(f"Erreur lors du téléchargement de {url_image} : {response.status_code}")
+    except Exception as e:
+        print(f"Erreur : {e}")
+        
 
 def extraction_livres(url: str):
     request = requests.get(url)
@@ -44,7 +72,7 @@ def extraction_livres(url: str):
                     review_rating = soup.find('p', class_='star-rating')['class'][1] if soup.find('p', class_='star-rating') else None
                     image_url = soup.find('div', id='product_gallery').find('img')['src']
                     image_url = "http://books.toscrape.com/" + image_url.replace('../../', '')
-
+                    download_image(image_url)
                     # Ajouter les données dans la liste books_list
                     books_list.append({
                         'Code universel des produits / UPC': universal_product_code,
@@ -180,6 +208,7 @@ def creer_csv(nom_fichier, liste_livres):
 
 def main():
     liste_livres=extraction_all(get_category())
+    #dowaload_image("http://books.toscrape.com/media/cache/c0/59/c05972805aa7201171b8fc71a5b00292.jpg")
     #liste_livres=extraction_livres("https://books.toscrape.com/catalogue/category/books/travel_2/index.html")
    # affichage_livres(liste_livres)
     #print(liste_livres)
