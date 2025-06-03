@@ -126,7 +126,22 @@ def extraction_all(liste_categories):
     return all_books
 
 
-def get_category():
+
+def extraction_one(nom_categorie):
+    """
+    Extrait tous les livres de toutes les catégories passées en paramètre.
+    :param liste_categories: Liste des noms de catégories (ex: ['travel_2', 'mystery_3', ...])
+    :return: Liste de tous les livres de toutes les catégories (liste de dictionnaires)
+    """
+    all_books = []
+    print(f"Extraction de la catégorie : {nom_categorie}")
+    livres_categorie = extraction_par_categorie(nom_categorie)
+    if livres_categorie:
+        all_books.extend(livres_categorie)
+    return all_books
+
+
+def get_categories():
     """
     Récupère les noms de toutes les catégories présentes dans le sous-menu "Books" de la page d'accueil.
     :return: Liste des noms de catégories au format utilisé dans les URLs (ex: 'sequential-art_5')
@@ -207,11 +222,12 @@ def creer_csv(nom_fichier, liste_livres):
 
 
 def main():
-    liste_livres=extraction_all(get_category())
-    #dowaload_image("http://books.toscrape.com/media/cache/c0/59/c05972805aa7201171b8fc71a5b00292.jpg")
-    #liste_livres=extraction_livres("https://books.toscrape.com/catalogue/category/books/travel_2/index.html")
-   # affichage_livres(liste_livres)
-    #print(liste_livres)
+    #Création du fichier CSV toute catégories
+    liste_livres=extraction_all(get_categories())
+    
+    #Création du fichier CSV une catogorie
+    categorie=""
+    liste_livres=extraction_one(categorie)
     creer_csv("livres.csv", liste_livres)
  
     
