@@ -227,7 +227,8 @@ def main():
     
     #Création du fichier CSV une catogorie
     categorie=""
-    liste_livres=extraction_one(categorie)
+    if categorie != "":
+        liste_livres=extraction_one(categorie)
     creer_csv("livres.csv", liste_livres)
  
     
