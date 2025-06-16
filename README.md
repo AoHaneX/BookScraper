@@ -1,6 +1,5 @@
 README - BookScraper
 
-========================================
 Description
 ----------------------------------------
 BookScraper est un programme Python permettant de scraper le site https://books.toscrape.com/ afin de récupérer les informations de tous les livres (ou d'une catégorie précise) et de les enregistrer dans un ou plusieurs fichiers CSV. 
@@ -21,11 +20,11 @@ Les informations récupérer sont , pour chaque livre:
 Fonctionnalités principales
 ----------------------------------------
 - Extraction des informations de tout les livres d'une catégorie précises 
-- Extraction des informations de tout les livres du site, triées par catégorie dans plusieurs fichiers CSV.
+- Extraction des informations de tout les livres du site, triées par catégorie
 - Génération d'un dossier "IMG" et téléchargement automatique des images de couverture dans ce dossier.
-- Génération d'un fichier CSV avec toutes les informations collectées.
-- Affichage ,  dans la console, des informations des livres.
-========================================
+- Génération de fichiers CSV pour chaque catégories contenant toutes les informations collectées .
+- Affichage possible,  dans la console, des informations des livres colléctés.
+=======================================
 Prérequis
 ----------------------------------------
 - Python 3.x

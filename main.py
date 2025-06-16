@@ -9,7 +9,7 @@ def download_image(url_image, nom_fichier=None):
     """
     Télécharge une image depuis une URL et la sauvegarde dans le dossier 'IMG'.
     :paramètre url_image: URL de l'image à télécharger
-    :param nom_fichier: Nom du fichier local (optionnel). Si None, le nom sera extrait de l'URL.
+    :paramètre nom_fichier: Nom du fichier local (optionnel). Si None, le nom sera extrait de l'URL.
     """
     # Créer le dossier IMG s'il n'existe pas
     dossier = "IMG"
