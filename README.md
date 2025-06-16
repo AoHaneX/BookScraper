@@ -21,10 +21,10 @@ Les informations récupérer sont , pour chaque livre:
 Fonctionnalités principales
 ----------------------------------------
 - Extraction des informations de tout les livres d'une catégorie précises 
-- Extraction des informations de tout les livres du site, triées par catégorie.
+- Extraction des informations de tout les livres du site, triées par catégorie dans plusieurs fichiers CSV.
 - Génération d'un dossier "IMG" et téléchargement automatique des images de couverture dans ce dossier.
 - Génération d'un fichier CSV avec toutes les informations collectées.
-- Affichage ,  dans la console, des informations des livres
+- Affichage ,  dans la console, des informations des livres.
 ========================================
 Prérequis
 ----------------------------------------
@@ -46,16 +46,14 @@ Utilisation
 Le script va :
 - Scraper toutes les catégories et tous les livres du site.
 - Télécharger les images dans un dossier "IMG".
-- Générer un fichier "livres.csv" avec toutes les informations.
+- Générer un fichier .csv pour chaque catégorie avec toutes les informations des livres appartenant à cette dite catégorie.
 
-Pour ne scraper qu'une seule catégorie, commentez avec un # la ligne 226
-	 liste_livres=extraction_all(get_categories()
-Et modifiez la variable `categorie` dans la fonction `main()` avec le nom de la catégorie voulue.
+Pour ne scraper qu'une seule catégorie, commentez avec les lignes  227 à 235 avec """ au début et à la fin, puis modifiez la variable `categorie` dans la fonction `main()` avec le nom de la catégorie voulue.
 
 ========================================
 Structure des fichiers/dossiers générés
 ----------------------------------------
-- livres.csv : Fichier CSV contenant toutes les informations des livres.
+- livres_(Nom de la catégorie)_(Numéro de la catégorie).csv : Fichier CSV contenant toutes les informations des livre d'une catégorie.
 - IMG/ : Dossier contenant toutes les images de couverture téléchargées.
 
 ========================================
