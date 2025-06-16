@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 def download_image(url_image, nom_fichier=None):
     """
     Télécharge une image depuis une URL et la sauvegarde dans le dossier 'IMG'.
-    :param url_image: URL de l'image à télécharger
+    :paramètre url_image: URL de l'image à télécharger
     :param nom_fichier: Nom du fichier local (optionnel). Si None, le nom sera extrait de l'URL.
     """
     # Créer le dossier IMG s'il n'existe pas
@@ -34,6 +34,10 @@ def download_image(url_image, nom_fichier=None):
         
 
 def extraction_livres(url: str):
+    """
+    Extrait les informations des livres de la page donnée en paramètre.
+    :paramètre url: URL de la page à extraire
+    """
     request = requests.get(url)
     if request.status_code == 200:
         soup = BeautifulSoup(request.content, 'html.parser')
@@ -47,7 +51,6 @@ def extraction_livres(url: str):
             if link.startswith('../../../'):
                 link = 'catalogue/' + link.replace('../../../', '')
             book_link = book_url + link
-            print("Le lien du livre est " + book_link)
             # Faire une requête vers la page du livre
             request = requests.get(book_link)
             if request.status_code == 200:
@@ -87,24 +90,29 @@ def extraction_livres(url: str):
                         "Url Image": image_url
                     })
                 except AttributeError as e:
-                    print(f"Erreur lors de l'extraction des données : {e}")
-        else:
-            print(f"Erreur lors de la requête vers la page du livre : {request.status_code}")
+                    print(f"Erreur lors de l'extraction des données : {e}")           
         return books_list
     else:
-        print(f"Erreur lors de la requête : {request.status_code}")
+        print(f"Fin del'extraction de cette catégorie")
+        print("------------------")
         return None
 
 def extraction_par_categorie(nom_categorie):
+    """
+    Lance la procédure d'extraction des informations des livres de la catégorie donnée en paramètre.
+    :paramètre nom_categorie: Nom de la catégorie à extraire
+    """
     base_url = "https://books.toscrape.com/catalogue/category/books/"
-    url_page_1 = f"{base_url}{nom_categorie}/index.html"
+    url_index= f"{base_url}{nom_categorie}/index.html"
+
     books_list = []
     page = 1
     while True:
-        url = url_page_1.replace('index.html', f'page-{page}.html')
-        print("L'url est "+ url)
+        if page == 1:
+            url =url_index
+        else:
+            url = url_index.replace('index.html', f'page-{page}.html')
         books_page = extraction_livres(url)
-        print(books_page)
         if not books_page or len(books_page) == 0:
             break
         books_list.extend(books_page)
@@ -113,9 +121,8 @@ def extraction_par_categorie(nom_categorie):
 
 def extraction_all(liste_categories):
     """
-    Extrait tous les livres de toutes les catégories passées en paramètre.
-    :param liste_categories: Liste des noms de catégories (ex: ['travel_2', 'mystery_3', ...])
-    :return: Liste de tous les livres de toutes les catégories (liste de dictionnaires)
+    Lance la procédure d'extraction des informations des livres de toutes les catégories données en paramètre.
+    :paramètre liste_categories: Liste des catégories à extraire
     """
     all_books = []
     for categorie in liste_categories:
@@ -129,9 +136,8 @@ def extraction_all(liste_categories):
 
 def extraction_one(nom_categorie):
     """
-    Extrait tous les livres de toutes les catégories passées en paramètre.
-    :param liste_categories: Liste des noms de catégories (ex: ['travel_2', 'mystery_3', ...])
-    :return: Liste de tous les livres de toutes les catégories (liste de dictionnaires)
+    Lance la procédure d'extraction des informations des livres de la catégorie donnée en paramètre.
+    :paramètre nom_categorie: Nom de la catégorie à extraire
     """
     all_books = []
     print(f"Extraction de la catégorie : {nom_categorie}")
@@ -170,6 +176,10 @@ def get_categories():
 
 
 def affichage_livre(book):
+    """
+    Affiche les informations d'un livre.
+    :paramètre book: Dictionnaire contenant les informations du livre à afficher
+    """
     if not book:
         print("Aucune information sur le livre à afficher.")
         return
@@ -187,6 +197,10 @@ def affichage_livre(book):
     print("-" * 40)
     
 def affichage_livres(liste_livres):
+    """
+    Lance la procédure d'affichage des informations de tous les livres.
+    :param liste_livres: Liste de dictionnaires contenant les informations des livres à afficher
+    """
     taille_livres = len(liste_livres)
     for livre in range(taille_livres) :
         affichage_livre(liste_livres[livre])
@@ -198,9 +212,8 @@ def affichage_livres(liste_livres):
 def creer_csv(nom_fichier, liste_livres):
     """
     Crée un fichier CSV et écrit les données dedans.
-    :param nom_fichier: Nom du fichier CSV à créer (ex: 'livres.csv')
-    :param en_tete: Liste des noms de colonnes (ex: ['titre', 'prix'])
-    :param donnees: Liste de dictionnaires contenant les données à écrire
+    :paramètre nom_fichier: Nom du fichier CSV à créer (ex: 'livres.csv')
+    :paramètre liste_livres: Liste des dictionnaires correspondant aux livrescontenant les données à écrire
     """
     
     en_tete = ['Code universel des produits / UPC',
@@ -222,18 +235,35 @@ def creer_csv(nom_fichier, liste_livres):
 
 
 def main():
-    #Création du fichier CSV toute catégories
-    liste_livres=extraction_all(get_categories())
     
-    #Création du fichier CSV une catogorie
     categorie=""
-    if categorie != "":
+    if categorie !="":
         liste_livres=extraction_one(categorie)
-    creer_csv("livres.csv", liste_livres)
- 
+        creer_csv("livres.csv", liste_livres)
+    #Création d'un fichier CSV par catégorie
+    else:
+        for categorie in get_categories():
+            print(get_categories)
+            liste_livres=extraction_one(categorie)
+            print(f"Extraction de la catégorie : {categorie}")
+            livres_categorie = extraction_par_categorie(categorie)
+            
+            #print(livres_categorie)
+            if livres_categorie:
+                creer_csv(f"livres_{categorie}.csv", liste_livres)
+            else:
+                print(f"Aucun livre trouvé pour la catégorie : {categorie}")
+
+    #Création du fichier CSV d'une catégorie
+   
     
     
 
 if __name__ == "__main__":
     main()
 
+
+    #Améliorations possibles :
+    # - Ajouter une interface graphique pour sélectionner les catégories
+    # - Ajouter une option pour télécharger les images des livres dans des sous-dossiers par catégorie
+    # - Ajouter une option pour filtrer les livres par prix, note, etc.
