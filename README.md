@@ -25,16 +25,33 @@ Fonctionnalités principales
 - Génération de fichiers CSV pour chaque catégories contenant toutes les informations collectées .
 - Affichage possible,  dans la console, des informations des livres colléctés.
 =======================================
-Prérequis
-----------------------------------------
+Prérequis:
 - Python 3.x
-- Les modules suivants doivent être installés :
-    - requests
-    - beautifulsoup4
+========================================
+Installation de l'environnement virtuel
+----------------------------------------
+Voici les étapes à suivre pour créer un environnement virtuel et lancer ce programme :
 
-Pour installer les dépendances :
-    pip install requests beautifulsoup4
+1)Ouvrir le terminal
+2)Lancer un invite de commandes
 
+3)Se Placer dans le dossier du projet avec la commande:
+cd "chemin du_du_repertoire"
+
+4)Créer l’environnement virtuel en tapant la commande suivante:
+python -m venv venv
+
+Cela va créer un dossier venv contenant l’environnement virtuel.
+
+5)Active l’environnement virtuel avec la commande:
+.venv/bin/activate
+
+6)Installer les dépendances du projet avec la commande:
+pip install -r requirements.txt
+Cela va installer automatiquement les modules nécessaires (requests et beautifulsoup4).
+
+6)Executer le programme avec votre IDE ou avec la commande:
+python main.py
 ========================================
 Utilisation
 ----------------------------------------
